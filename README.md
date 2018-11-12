@@ -48,5 +48,5 @@ Using Exercise3 complete the following:
 ## Exercise 6
 
 - Rebase your branch from the branch "Rebase_Test"
-- Fix any conflicts
+- Fix any conflicts and make sure it works
 - Push 
