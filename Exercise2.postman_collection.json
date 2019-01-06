@@ -1,36 +1,42 @@
 {
 	"info": {
-		"_postman_id": "45939d13-acc8-4a01-9913-b182d9ada975",
+		"_postman_id": "b59524de-57e9-4806-acff-c9e36b772c78",
 		"name": "Exercise2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Get Auth Token",
+			"name": "Get_Locations",
 			"event": [
 				{
-					"listen": "prerequest",
+					"listen": "test",
 					"script": {
-						"id": "bfa0624b-e0a4-4d1c-b0bd-d3b20d3ac613",
+						"id": "d5be367e-00b0-4417-982a-3639f9bdf0ba",
 						"exec": [
+							"pm.test(\"Status 200 is present\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"pm.test(\"response should be okay to process\", function () { ",
+							"    pm.response.to.not.have.jsonBody(\"error\"); ",
+							"});",
+							"",
+							"let jsonData = JSON.parse(responseBody);",
+							"tests[\"place_id exist\"] = jsonData.place_id !== null;",
+							"tests[\"display_address exist\"] = jsonData.display_address !== null;",
+							"tests[\"JSON Array is not empty\"] = (responseBody.length >=0);",
 							""
 						],
 						"type": "text/javascript"
 					}
 				},
 				{
-					"listen": "test",
+					"listen": "prerequest",
 					"script": {
-						"id": "61770d09-3a98-436a-977e-da16b082830c",
+						"id": "dcd464f6-33bb-440a-b7ae-5aba42fb1648",
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
-							"pm.test(\"Status 201 is present\", function () {",
-							"    pm.response.to.have.status(201);",
-							"});",
-							"pm.test(\"Content-Type is present\", function () {",
-							"    pm.response.to.have.header(\"Content-Type\");",
-							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -38,91 +44,41 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [
 					{
-						"key": "content-type",
+						"key": "Content-Type",
 						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "Bearer {{bearer_token}}"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n\t\"query\": \"London\"\n}"
 				},
 				"url": {
-					"raw": "{{url_scheme}}://{{hostname}}/v1/auth/token",
-					"protocol": "{{url_scheme}}",
+					"raw": "https://rest.karhoo.com/v1/locations/address-autocomplete",
+					"protocol": "https",
 					"host": [
-						"{{hostname}}"
+						"rest",
+						"karhoo",
+						"com"
 					],
 					"path": [
 						"v1",
-						"auth",
-						"token"
+						"locations",
+						"address-autocomplete"
 					]
 				},
-				"description": "Authenticate and get a JWT"
+				"description": "Get a list of locations from a latitude and longitude and query-string"
 			},
-			"response": [
-				{
-					"name": "Get Auth Token",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "content-type",
-								"value": "application/json"
-							},
-							{
-								"key": "correlation_id",
-								"value": "{{generated_correlation_id}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
-						},
-						"url": {
-							"raw": "{{url_scheme}}://{{hostname}}/v1/auth/token",
-							"protocol": "{{url_scheme}}",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"v1",
-								"auth",
-								"token"
-							]
-						},
-						"description": "Authenticate and get a JWT"
-					},
-					"status": "Created",
-					"code": 201,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Length",
-							"value": "1044",
-							"name": "Content-Length",
-							"description": "The length of the response body in octets (8-bit bytes)"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json",
-							"name": "Content-Type",
-							"description": "The mime type of this content"
-						},
-						{
-							"key": "Date",
-							"value": "Mon, 11 Dec 2017 15:35:54 GMT",
-							"name": "Date",
-							"description": "The date and time that the message was sent"
-						}
-					],
-					"cookie": [],
-					"body": "{\n  \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ik9UQXpOalV5TWpNeVFUTTBSVFF4TjBORVF6TXlOak0zTlRRNE56TXpORFk0TkRneE1USXpNdyJ9.eyJodHRwczovL2thcmhvby5jb20vYXBwX21ldGFkYXRhIjp7InJvbGVzIjp7IkFHRU5UIjp0cnVlLCJQUklWQVRFX0FDQ0VTUyI6dHJ1ZX0sImZsZWV0X2FjY2VzcyI6eyJMSVZFIjp0cnVlfX0sImlzcyI6Imh0dHBzOi8va2FyaG9vLXN0YWdpbmcuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVhMjkyZGJkZmQxYTMzMjEzNTA0YjQ1YiIsImF1ZCI6Imh0dHBzOi8vcmVzdC5zdGcua2FyaG9vLm5ldCIsImlhdCI6MTUxMzAwNjU1NCwiZXhwIjoxNTEzMDkyOTU0LCJhenAiOiI0Qjh3NTVVbU5sZDVDa3Nsdkp5TXA3cnZjMTVOT3hlMSIsInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJndHkiOiJwYXNzd29yZCJ9.n_IdWbOIYgVv0_5d9fOMQP08Vk65XPdvNhTF_vhrUTjpobnw1lPBBWPEaKopnh2tdFSa9qOLdDxnBV7r2p3kulGub0vs4u8KRconrznBTdr7Ygu-mbsjQxV0-rxq2zSSZbm1ycCxRw8angOBnZDoPSvg3qw2CUW47kQM9QLnyLvWYopR4r6S8n-JUmqDPSE7m_dBqYwYcxVo1hoccf4yNgCXLksuQX2z6ZUVEPQSmUBCFG1ETAUqqEr_YSxulEn3VPktedY1SK8uStea0E9oLlgHWG4854uuC8qpr1MFKfGBsGORMHbg1IOts-5OUQA8XEi9LDsdfIIcpKCRrVKBKg\",\n  \"expires_in\": 86400,\n  \"refresh_token\": \"0f7rOE3fN5mY-CozD3SnePyJQPdq3Tzo2DepTiekyentM\"\n }"
-				}
-			]
+			"response": []
 		}
 	]
 }
