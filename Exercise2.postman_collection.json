@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "716128bd-9348-4359-8399-58ea9054fe96",
+		"_postman_id": "b59524de-57e9-4806-acff-c9e36b772c78",
 		"name": "Exercise2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,20 @@
 					"script": {
 						"id": "d5be367e-00b0-4417-982a-3639f9bdf0ba",
 						"exec": [
+							"pm.test(\"Status 200 is present\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"pm.test(\"response should be okay to process\", function () { ",
+							"    pm.response.to.not.have.jsonBody(\"error\"); ",
+							"});",
+							"",
+							"let jsonData = JSON.parse(responseBody);",
+							"tests[\"place_id exist\"] = jsonData.place_id !== null;",
+							"tests[\"display_address exist\"] = jsonData.display_address !== null;",
+							"tests[\"JSON Array is not empty\"] = (responseBody.length >=0);",
 							""
 						],
 						"type": "text/javascript"
@@ -30,6 +44,9 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -43,13 +60,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n\t\"query\": \"London\"\n}"
 				},
 				"url": {
-					"raw": "{{url_scheme}}://{{hostname}}/v1/locations/address-autocomplete",
-					"protocol": "{{url_scheme}}",
+					"raw": "https://rest.karhoo.com/v1/locations/address-autocomplete",
+					"protocol": "https",
 					"host": [
-						"{{hostname}}"
+						"rest",
+						"karhoo",
+						"com"
 					],
 					"path": [
 						"v1",

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6a5d9277-4a9e-4527-804c-17aaeed70b30",
+		"_postman_id": "dae91a8a-2c03-447f-908a-c6e3111a8b0a",
 		"name": "Exercise1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -25,6 +25,7 @@
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
 							"pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
+							"pm.environment.set(\"bearer_token\", jsonData.access_token);",
 							"pm.test(\"Status 201 is present\", function () {",
 							"    pm.response.to.have.status(201);",
 							"});",
@@ -38,6 +39,9 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -47,13 +51,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n\t\"username\": \"test@karhoo.com\",\n\t\"password\": \"Password1234!\"\n}"
 				},
 				"url": {
-					"raw": "{{url_scheme}}://{{hostname}}/v1/auth/token",
-					"protocol": "{{url_scheme}}",
+					"raw": "https://rest.karhoo.com/v1/auth/token",
+					"protocol": "https",
 					"host": [
-						"{{hostname}}"
+						"rest",
+						"karhoo",
+						"com"
 					],
 					"path": [
 						"v1",
